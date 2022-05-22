@@ -1,0 +1,33 @@
+isExceptional := proc (q,p)
+    local F := (Factors(NumberTheory:-Phi(q,X)) mod p)[2];
+    local r := nops(F);
+    local i := 1;
+    for i from 1 to r do
+        F[i] := F[i][1];
+    end do;
+    local j := 1;
+    for j from 1 to 2^r - 1 do
+        local b := map2(nprintf,cat("%0",r,"d"),convert(j,binary));
+        local E := map(parse,StringTools:-Explode(convert(b,string)));
+        local s := nops(E);
+        local k := 1;
+        local T:= 1;
+        for k from 1 to s do
+            T := T * (F[k]^E[k]);
+        end do;
+        T := expand(T);
+        if evalb(coeff(T,X,1) = 0 mod p) then return 1 fi;
+    end do;
+    return 0;
+end proc;
+Exceptionals := proc(p,n)
+    local P:={};
+    for i from 2 to n do
+        if isprime(i) then
+            if evalb(isExceptional(i,p) = 1) then
+                P := P union {i};
+            end if;
+        end if;
+    end do;
+return P;
+end proc;
